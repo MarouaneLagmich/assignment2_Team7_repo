@@ -1,0 +1,35 @@
+<?php
+
+// Connect to the database
+$conn = mysqli_connect('hostname', 'username', 'password', 'database_name');
+
+// Check if the user has submitted a search query
+if (isset($_GET['search'])) {
+  // Sanitize the search query
+  $search_query = mysqli_real_escape_string($conn, $_GET['search']);
+
+  // Execute a SELECT query to retrieve the matching records
+  $sql = "SELECT * FROM table_name WHERE column_name LIKE '%$search_query%'";
+  $result = mysqli_query($conn, $sql);
+
+  // Check if any records were retrieved
+  if (mysqli_num_rows($result) > 0) {
+    // Generate an HTML table to display the results
+    echo "<table>";
+    while ($row = mysqli_fetch_assoc($result)) {
+      echo "<tr><td>" . $row['column_name'] . "</td></tr>";
+    }
+    echo "</table>";
+  } else {
+    // No matching records were found
+    echo "No results found";
+  }
+}
+
+?>
+
+<!-- HTML form for the search feature -->
+<form action="page.php" method="get">
+  <input type="text" name="search" placeholder="Enter search query">
+  <button type="submit">Search</button>
+</form>
